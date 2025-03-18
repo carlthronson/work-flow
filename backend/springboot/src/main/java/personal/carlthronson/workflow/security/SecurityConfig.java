@@ -30,6 +30,7 @@ public class SecurityConfig {
             .requestMatchers("/graphql").permitAll()
             .requestMatchers("/h2-console/**").permitAll()
             .requestMatchers("/account/**").permitAll()
+            .requestMatchers("/status/**").permitAll()
             .anyRequest().authenticated()
             )
         .httpBasic(Customizer.withDefaults())

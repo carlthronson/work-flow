@@ -66,13 +66,13 @@ public class BaseObject {
   // Every entity needs a name
   @Getter
   @Setter
-  @Column(name = "name")
+//  @Column(name = "name")
   private String reference;
 
   // Every entity needs a label
   @Getter
   @Setter
-  @Column(name = "label")
+//  @Column(name = "label")
   private String details;
 
   @Override
