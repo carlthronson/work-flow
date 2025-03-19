@@ -43,7 +43,7 @@ public class TaskEntity extends Task {
    * Every Task needs a Story
    * And every Story needs a Task
    */
-  @OneToOne
+  @ManyToOne
   /**
    * The Story is created first
    * And then the Task is created and refers to the Story
