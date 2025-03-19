@@ -6,8 +6,8 @@ export default function Page() {
     <div>
       <h1>Home page</h1>
       <div>
-        <Link href="/task-board">
-          Job search app
+        <Link href="/work-flow">
+          Work flow app
         </Link>
       </div>
       <div>
