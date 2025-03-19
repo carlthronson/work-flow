@@ -31,9 +31,9 @@ public class SecurityConfig {
             .requestMatchers("/h2-console/**").permitAll()
             .requestMatchers("/account/**").permitAll()
             .requestMatchers("/status/**").permitAll()
-            .anyRequest().authenticated()
+            .anyRequest().permitAll()
             )
-        .httpBasic(Customizer.withDefaults())
+//        .httpBasic(Customizer.withDefaults())
         .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter.class)

@@ -20,7 +20,7 @@ public class PhaseEntity extends Phase {
   /**
    * A Phase can haver zero or more Statuses
    * And a Status must have exactly one Phase
-   *
+   * 
    * The Phase is created first
    * And then the Status is created and refers to the Phase
    * Meaning Status is the owner of the relationship

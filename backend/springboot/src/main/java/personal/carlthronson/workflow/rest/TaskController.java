@@ -29,11 +29,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 //import personal.carlthronson.dl.be.svc.StatusService;
 //import personal.carlthronson.dl.be.svc.TaskService;
 import personal.carlthronson.workflow.data.core.Task;
-import personal.carlthronson.workflow.data.entity.StatusEntity;
-import personal.carlthronson.workflow.data.entity.StoryEntity;
+import personal.carlthronson.workflow.data.core.TaskUpdate;
 import personal.carlthronson.workflow.data.entity.TaskEntity;
 import personal.carlthronson.workflow.jpa.repo.StatusRepository;
-import personal.carlthronson.workflow.jpa.repo.TaskRepository;
 
 @RestController
 @EnableWebMvc
@@ -51,16 +49,16 @@ public class TaskController {
     }
 
     @Autowired
-    private TaskRepository service;
+    private TaskService service;
 
     Logger logger = Logger.getLogger(TaskController.class.getName());
 
     @Autowired
-    private StatusRepository statusService;
+    private StatusRepository statusRepository;
 
     @RequestMapping(path = "/task/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable(name = "id") Long id) {
-        service.deleteById(id);
+        service.delete(id);
     }
 
 //    @RequestMapping(path = "/task/update", method = RequestMethod.PUT)
@@ -73,27 +71,27 @@ public class TaskController {
 //        return map;
 //    }
 
-    @RequestMapping(path = "/task", method = RequestMethod.POST)
-    public Task save(@RequestBody Task task) {
-        logger.info("Request body: " + task);
-        TaskEntity taskEntity = new TaskEntity();
-        taskEntity.setId(task.getId());
-        taskEntity.setReference(task.getReference());
-        taskEntity.setDetails(task.getDetails());
-        return service.save(taskEntity);
+    @RequestMapping(path = "/task/update", method = RequestMethod.PUT)
+    public Map<String, Object> update(@RequestBody TaskUpdate task) {
+        logger.info("Request body task: " + task.getTaskId() + " status: " + task.getStatusId());
+        Optional<TaskEntity> optional = service.update(task.getTaskId(), task.getStatusId());
+        Map<String, Object> map = new HashMap<>();
+        map.put("task", task);
+        map.put("result", optional.isPresent());
+        return map;
     }
 
     @RequestMapping(path = "/task/getbyid/{id}", method = RequestMethod.GET)
     public Task getById(@PathVariable("id") Long id) {
         logger.info("Path variable: " + id);
-        Optional<TaskEntity> taskEntity = service.findById(id);
-        return taskEntity.get();
+        TaskEntity taskEntity = service.findById(id);
+        return taskEntity;
     }
 
     @RequestMapping(path = "/task/findbyid/{id}", method = RequestMethod.GET)
     public Task findById(@PathVariable("id") Long id) {
         logger.info("Path variable: " + id);
-        return service.findById(id).get();
+        return service.findById(id);
     }
 
     @RequestMapping(path = "/task/findallbyid/{id}", method = RequestMethod.GET)
@@ -107,13 +105,13 @@ public class TaskController {
     @RequestMapping(path = "/task/findbyname/{name}", method = RequestMethod.GET)
     public Task findByName(@PathVariable("name") String name) {
         logger.info("Path variable: " + name);
-        return service.findByReference(name);
+        return service.findByName(name);
     }
 
     @RequestMapping(path = "/task/findallbyname/{name}", method = RequestMethod.GET)
     public List<Task> findAllByName(@PathVariable("name") String name) {
         logger.info("Path variable: " + name);
-        return service.findAllByReference(name).stream().map(entity -> {
+        return service.findAllByName(name).stream().map(entity -> {
           return entity;
         }).collect(Collectors.toList());
     }
@@ -121,14 +119,14 @@ public class TaskController {
     @RequestMapping(path = "/task/findbylabel/{label}", method = RequestMethod.GET)
     public Task findByLabel(@PathVariable("label") String label) {
         logger.info("Path variable: " + label);
-        return service.findByDetails(label);
+        return service.findByLabel(label);
     }
 
     @RequestMapping(path = "/task/findallbylabel/{label}", method = RequestMethod.GET)
     public List<TaskEntity> findAllByLabel(
             @PathVariable("label") String label) {
         logger.info("Path variable: " + label);
-        return service.findAllByDetails(label).stream().map(entity -> {
+        return service.findAllByLabel(label).stream().map(entity -> {
           return entity;
         }).collect(Collectors.toList());
     }

@@ -10,4 +10,8 @@ type Mutation {
   resetPassword(email: String!, password: String!, token: String!): Boolean!
 
   login(email: String!, password: String!): [String!]!
+
+  createStory(reference: String!, details: String!): ID!
+
+  createTask(reference: String!, details: String!, story: String!): ID!
 }

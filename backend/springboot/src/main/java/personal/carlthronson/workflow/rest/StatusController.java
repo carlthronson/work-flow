@@ -3,9 +3,7 @@ package personal.carlthronson.workflow.rest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.Principal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -24,15 +22,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-//import personal.carlthronson.dl.be.dto.StatusUpdate;
-//import personal.carlthronson.dl.be.entity.JobEntity;
-//import personal.carlthronson.dl.be.svc.StatusService;
-//import personal.carlthronson.dl.be.svc.StatusService;
 import personal.carlthronson.workflow.data.core.Status;
 import personal.carlthronson.workflow.data.entity.StatusEntity;
-import personal.carlthronson.workflow.data.entity.StoryEntity;
-import personal.carlthronson.workflow.data.entity.StatusEntity;
-import personal.carlthronson.workflow.jpa.repo.StatusRepository;
 import personal.carlthronson.workflow.jpa.repo.StatusRepository;
 
 @RestController
@@ -51,16 +42,13 @@ public class StatusController {
     }
 
     @Autowired
-    private StatusRepository service;
+    private StatusRepository statusRepository;
 
     Logger logger = Logger.getLogger(StatusController.class.getName());
 
-    @Autowired
-    private StatusRepository statusService;
-
     @RequestMapping(path = "/status/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable(name = "id") Long id) {
-        service.deleteById(id);
+        statusRepository.deleteById(id);
     }
 
 //    @RequestMapping(path = "/status/update", method = RequestMethod.PUT)
@@ -80,26 +68,26 @@ public class StatusController {
         statusEntity.setId(status.getId());
         statusEntity.setReference(status.getReference());
         statusEntity.setDetails(status.getDetails());
-        return service.save(statusEntity);
+        return statusRepository.save(statusEntity);
     }
 
     @RequestMapping(path = "/status/getbyid/{id}", method = RequestMethod.GET)
     public Status getById(@PathVariable("id") Long id) {
         logger.info("Path variable: " + id);
-        Optional<StatusEntity> statusEntity = service.findById(id);
+        Optional<StatusEntity> statusEntity = statusRepository.findById(id);
         return statusEntity.get();
     }
 
     @RequestMapping(path = "/status/findbyid/{id}", method = RequestMethod.GET)
     public Status findById(@PathVariable("id") Long id) {
         logger.info("Path variable: " + id);
-        return service.findById(id).get();
+        return statusRepository.findById(id).get();
     }
 
     @RequestMapping(path = "/status/findallbyid/{id}", method = RequestMethod.GET)
     public List<Status> findAllById(@PathVariable("id") Long id) {
         logger.info("Path variable: " + id);
-        return service.findAllById(id).stream().map(entity -> {
+        return statusRepository.findAllById(id).stream().map(entity -> {
           return entity;
         }).collect(Collectors.toList());
       }
@@ -107,13 +95,13 @@ public class StatusController {
     @RequestMapping(path = "/status/findbyname/{name}", method = RequestMethod.GET)
     public Status findByName(@PathVariable("name") String name) {
         logger.info("Path variable: " + name);
-        return service.findByReference(name);
+        return statusRepository.findByReference(name);
     }
 
     @RequestMapping(path = "/status/findallbyname/{name}", method = RequestMethod.GET)
     public List<Status> findAllByName(@PathVariable("name") String name) {
         logger.info("Path variable: " + name);
-        return service.findAllByReference(name).stream().map(entity -> {
+        return statusRepository.findAllByReference(name).stream().map(entity -> {
           return entity;
         }).collect(Collectors.toList());
     }
@@ -121,14 +109,14 @@ public class StatusController {
     @RequestMapping(path = "/status/findbylabel/{label}", method = RequestMethod.GET)
     public Status findByLabel(@PathVariable("label") String label) {
         logger.info("Path variable: " + label);
-        return service.findByDetails(label);
+        return statusRepository.findByDetails(label);
     }
 
     @RequestMapping(path = "/status/findallbylabel/{label}", method = RequestMethod.GET)
     public List<StatusEntity> findAllByLabel(
             @PathVariable("label") String label) {
         logger.info("Path variable: " + label);
-        return service.findAllByDetails(label).stream().map(entity -> {
+        return statusRepository.findAllByDetails(label).stream().map(entity -> {
           return entity;
         }).collect(Collectors.toList());
     }
@@ -138,13 +126,13 @@ public class StatusController {
             @RequestParam("limit") Optional<Integer> limit,
             Principal principal) {
         logger.info("Request param: " + limit);
-        return service.findAll().stream().map(entity -> {
+        return statusRepository.findAll().stream().map(entity -> {
           return entity;
         }).collect(Collectors.toList());
     }
 
     @RequestMapping(path = "/status/count", method = RequestMethod.GET)
     public Long count() {
-        return service.count();
+        return statusRepository.count();
     }
 }
